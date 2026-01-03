@@ -1,0 +1,23 @@
+global:
+  scrape_interval: 15s
+
+# 1. NEW: Points to the file where we define "Accuracy < 0.8" etc.
+rule_files:
+  - "alert_rules.yml"
+
+# 2. NEW: Tells Prometheus how to talk to the Alertmanager container
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - 'alertmanager:9093'
+
+scrape_configs:
+  - job_name: 'ml-app'
+    static_configs:
+      # Use the service name from your docker-compose file
+      - targets: ['ml-app:8000'] 
+
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']

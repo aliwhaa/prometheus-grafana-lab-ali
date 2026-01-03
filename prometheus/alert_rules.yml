@@ -1,0 +1,47 @@
+groups:
+  - name: ml_logic_alerts
+    rules:
+      # 1. Datalake Alert (Fixed for Counters)
+      - alert: DataLakeUnavailable
+        expr: increase(datalake_unavailable_total[1m]) > 0
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: "New 503 errors detected from Data Lake in the last minute."
+
+      # 2. Accuracy Alert (Gauge - Absolute value is correct)
+      - alert: AccuracyLow
+        expr: model_accuracy < 0.8
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Model accuracy is {{ $value }}, which is below the 0.8 threshold."
+
+      # 3. Distribution Drift (Gauge - Binary flag)
+      - alert: DistributionDrift
+        expr: distribution_drift_detected == 1
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Distribution drift detected in the feature set."
+
+      # 4. Feature Changed (Gauge - Binary flags)
+      - alert: FeatureChanged
+        expr: feature_added == 1 or feature_removed == 1
+        for: 0m
+        labels:
+          severity: info
+        annotations:
+          summary: "Input features have changed (Added or Removed)."
+
+      # 5. High Response Delay (Gauge - Absolute value)
+      - alert: HighResponseDelay
+        expr: response_delay_seconds > 2
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Data Lake response delay is high: {{ $value }}s"

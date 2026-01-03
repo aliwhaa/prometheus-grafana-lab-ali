@@ -1,0 +1,11 @@
+apiVersion: 1
+providers:
+  - name: 'MLOps Dashboards'
+    orgId: 1
+    folder: ''
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      # This MUST match the right side of your volume mount in docker-compose
+      path: /var/lib/grafana/dashboards
